@@ -258,5 +258,16 @@ class CliTests(unittest.TestCase):
             self.assertIn("conflict marker", res.stderr.lower())
 
 
+    def test_issue_1037_corpus_fixtures_scan_cleanly(self):
+        repo_root = SCRIPT.resolve().parent.parent
+        for rel in (
+            "tests/corpus/issue_1037_conflict_gate_accept.hy",
+            "tests/corpus/issue_1037_conflict_gate_reject.hy",
+        ):
+            path = repo_root / rel
+            self.assertTrue(path.is_file(), f"missing fixture {rel}")
+            self.assertEqual(MOD.scan_file(path), [])
+
+
 if __name__ == "__main__":
     unittest.main()
