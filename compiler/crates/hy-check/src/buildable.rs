@@ -1,4 +1,4 @@
-//! buildable.rs — issue #134: an accepted program must emit buildable Go.
+ompiler/crates/hy-check/src/buildable.rs//! buildable.rs — issue #134: an accepted program must emit buildable Go.
 //!
 //! Go's front-end rejects four declaration shapes that `hyb check` used to
 //! accept with 0 diagnostics, so the emitted module could never build:
