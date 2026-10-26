@@ -635,16 +635,24 @@ impl<'a> Checker<'a> {
                 return;
             }
         }
-        let Expr::Ident { name, .. } = callee else {
+        let Expr::Ident { name, .. } = unwrap_parens(callee) else {
             return;
         };
-        if !is_conversion_target(name) {
+        let resolved_bool_target = matches!(
+            self.resolve_type_alias(&TypeExpr::Named {
+                name: name.clone(),
+                span: callee.span(),
+            }),
+            TypeExpr::Named { ref name, .. } if name == "bool"
+        );
+        let target_name = if resolved_bool_target { "bool" } else { name.as_str() };
+        if !is_conversion_target(target_name) {
             return;
         }
         let Some(c) = conv_const(arg) else {
             return; // non-constant operand: run-time conversion (SPEC X4)
         };
-        self.check_conv_against_target(name, &c, arg, span);
+        self.check_conv_against_target(target_name, &c, arg, span);
     }
 
     fn check_slice_conversion(&mut self, elem: &TypeExpr, arg: &Expr, span: Span) {
